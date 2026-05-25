@@ -1,0 +1,64 @@
+# Dependencies
+node_modules/
+
+# Build output
+client/dist/
+server/public/
+
+# Runtime data and uploads
+data/
+server/data/
+uploads/
+server/uploads/
+*.db
+
+# Update packages and temporary workspaces
+build/archives/
+build/temp/
+temp_update_*/
+.tmp_audit*/
+
+# Backups
+backups/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# IDE and local assistant state
+.idea/
+.vscode/
+.claude/
+.git-disabled/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+nul
+nul.txt
+
+# Internal-only docs and generated deployment snapshots
+AGENTS.md
+docs/测试清单.md
+docs/deployment-docker/
+docs/deployment-pm2/
+docs/PM2进程管理指南.md
+docs/服务器重启恢复指南.md
+docs/学习宝塔更新机制.md
+docs/examples/remote-core/xuexi/
+xuexi.user.js
+
+# Tests generated during local audits
+test/
+*.test.js
