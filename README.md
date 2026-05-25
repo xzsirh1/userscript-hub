@@ -1,26 +1,60 @@
-# 脚本分发平台
+# Userscript Hub / 脚本分发平台
 
-一个通用的脚本、浏览器扩展和程序分发管理平台，支持版本管理、下载统计、授权审批、设备绑定、远程核心下发和在线更新。
+> A self-hosted platform for distributing userscripts, browser extensions, and small tools with authorization, version management, remote-core delivery, and update packages.
+>
+> 一个可以自己部署的脚本分发平台，用来管理油猴脚本、浏览器插件和工具程序，并支持授权审批、版本管理、远程核心下发和在线更新。
 
-## 功能概览
+## Why This Project Exists / 为什么做这个项目
 
-- 脚本管理：上传、解析 UserScript 头部、版本管理、混淆下载。
-- 授权运行时：支持授权申请、后台审批、授权码、设备绑定、会话和心跳。
-- 远程核心：下载壳脚本，授权后从服务端拉取 Manifest 与远程模块。
-- 资源分发：支持脚本、浏览器插件和可执行程序上传与下载统计。
-- 后台管理：分类、站点配置、主题、更新包、备份和同步。
-- 首次部署引导：新环境启动后通过 `/setup` 设置平台名称和管理员账号，不依赖硬编码默认账号。
+Many userscript authors can write useful scripts, but they often struggle with distribution, updates, authorization, and protecting their work from casual copying.
 
-## 技术栈
+很多脚本作者会写脚本，但真正发布给别人使用时，会遇到这些问题：怎么更新、怎么授权、怎么统计使用、怎么保护自己的劳动成果。Userscript Hub 希望把这些复杂流程做成一个更容易使用的平台。
 
-- 前端：Vue 3 + Vite + Element Plus + ECharts
-- 后端：Node.js + Express + SQLite (`better-sqlite3`)
-- 部署：Docker / PM2 + Nginx
+## What You Can Do / 你可以用它做什么
 
-## 本地开发
+- Upload and manage userscripts, browser extensions, and executable tools.
+- Keep multiple script versions and generate install links.
+- Protect private scripts with authorization codes, approval flows, and device binding.
+- Deliver a lightweight shell script while keeping the core logic on your server through `remote_core`.
+- Track downloads, sessions, heartbeat events, and runtime errors.
+- Package updates with one standard command and deploy them through the admin panel.
+
+中文总结：
+
+- 上传、管理和分发油猴脚本、浏览器插件、小工具。
+- 管理脚本多版本，生成安装链接。
+- 用授权码、审批、设备绑定保护私有脚本。
+- 使用远程核心模式，让用户安装一个壳，核心逻辑由你的服务器下发。
+- 统计下载、运行会话、心跳和错误事件。
+- 用标准更新包完成在线升级。
+
+## Who Is It For / 适合谁
+
+- Userscript authors who want a private distribution platform.
+- Small teams that need controlled script delivery.
+- Developers who want to protect paid or internal automation scripts.
+- Beginners who want a web UI instead of editing server files by hand.
+
+适合：油猴脚本作者、小团队、内部工具维护者、想把脚本授权和更新做得更规范的人。
+
+## Highlights / 亮点
+
+- **First-run setup**: new deployments open `/setup` to initialize the platform name and admin account.
+- **Remote core**: distribute a shell script and load the real module from your server after authorization.
+- **Authorization workflow**: approval requests, authorization codes, device binding, session tracking, and heartbeats.
+- **Tampermonkey compatibility**: keeps important UserScript headers and supports sandbox-friendly delivery for stricter CSP websites.
+- **Update package workflow**: one command, `node scripts/create-update.js`, creates standard update packages.
+
+## Tech Stack / 技术栈
+
+- Frontend: Vue 3 + Vite + Element Plus + ECharts
+- Backend: Node.js + Express + SQLite (`better-sqlite3`)
+- Deployment: Docker / PM2 + Nginx
+
+## Quick Start / 快速开始
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/xzsirh1/userscript-hub.git
 cd userscript-hub
 
 cd server
@@ -32,60 +66,55 @@ npm install
 npm run dev
 ```
 
-默认地址：
+Open:
 
-- 前台：`http://localhost:5173`
-- 后台：`http://localhost:5173/admin`
-- 首次部署引导：`http://localhost:5173/setup`
-- 后端健康检查：`http://localhost:3000/api/health`
+- Frontend: `http://localhost:5173`
+- Admin: `http://localhost:5173/admin`
+- Setup: `http://localhost:5173/setup`
+- API health check: `http://localhost:3000/api/health`
 
-## 首次部署
+On a fresh database, the platform does not create a default admin account. Visit `/setup` first and create your own platform name, username, and password.
 
-全新数据库启动后不会自动创建默认管理员。请先访问 `/setup`，按页面引导填写：
+全新数据库不会自动创建默认管理员。第一次部署后请先访问 `/setup`，设置平台名称、管理员用户名和密码。
 
-- 平台名称
-- 管理员用户名
-- 管理员密码
+## Update Package / 更新包
 
-已有旧数据库如果已经存在管理员账号，会继续保持兼容，不会强制进入初始化流程。
-
-## 更新包
-
-项目统一使用唯一标准脚本生成更新包：
+Use the only standard update script:
 
 ```bash
 node scripts/create-update.js
 ```
 
-正式更新包会输出到 `build/archives/`。公开仓库不会提交更新包 ZIP、临时构建目录、数据库、上传文件或真实部署数据。
+Generated ZIP files are stored in `build/archives/`. Runtime data, uploads, databases, temporary files, and update archives are not committed to the public repository.
 
-## 目录结构
+## Documentation / 文档
 
-```text
-client/                  前端源码
-server/                  后端源码
-docs/                    通用文档
-scripts/                 工具脚本
-build/README.md          构建与更新包目录说明
-CHANGELOG.md             变更记录
-CONTRIBUTING.md          贡献说明
-LICENSE                  开源协议
-```
+- [Quick Start / 快速开始](docs/快速开始.md)
+- [First Deployment Setup / 首次部署引导](docs/首次部署引导.md)
+- [User Guide / 使用说明](docs/使用说明.md)
+- [Update Package Guide / 更新包说明](docs/更新包说明.md)
+- [Deployment Checklist / 部署检查清单](docs/部署检查清单.md)
+- [Docs Index / 文档导航](docs/README.md)
 
-## 文档
+## Security Notes / 安全提示
 
-- [快速开始](docs/快速开始.md)
-- [首次部署引导](docs/首次部署引导.md)
-- [使用说明](docs/使用说明.md)
-- [更新包说明](docs/更新包说明.md)
-- [部署检查清单](docs/部署检查清单.md)
-- [文档导航](docs/README.md)
+- Set a strong `JWT_SECRET` in production.
+- Do not commit `.env`, databases, uploaded files, update ZIP files, real server addresses, or passwords.
+- Remote-core delivery can raise the cost of copying and unauthorized use, but no client-side script protection is absolutely unbreakable.
 
-## 安全提示
+## Roadmap / 后续方向
 
-- 生产环境务必设置强 `JWT_SECRET`。
-- 不要提交 `.env`、数据库、上传文件、更新包、真实服务器地址或账号密码。
-- 远程核心用于提高脚本分发和授权管理门槛，不等同于绝对防破解。
+- Cleaner Docker and PM2 deployment templates.
+- More beginner-friendly remote-core publishing flow.
+- Better English documentation.
+- Screenshots and demo videos.
+- Optional Docker image release.
+
+## Contributing / 参与贡献
+
+Issues, suggestions, documentation improvements, and pull requests are welcome.
+
+如果你是中文用户，也可以直接用中文提交 Issue。这个项目还在成长中，任何反馈都很有价值。
 
 ## License
 
